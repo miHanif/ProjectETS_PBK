@@ -4,13 +4,21 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  heading: {
+    type: String,
+    required: true,
+  },
+  navigationLabel: {
+    type: String,
+    required: true,
+  },
 })
 </script>
 
 <template>
   <aside class="app-sidebar">
-    <p class="sidebar-heading">Menu</p>
-    <nav aria-label="Navigasi utama">
+    <p class="sidebar-heading">{{ props.heading }}</p>
+    <nav :aria-label="props.navigationLabel">
       <RouterLink
         v-for="item in props.items"
         :key="item.path"

@@ -39,11 +39,17 @@ async function logout() {
 
 <template>
   <div class="main-layout">
-    <AppSidebar :items="menuItems" />
+    <AppSidebar
+      :items="menuItems"
+      heading="Menu"
+      navigation-label="Navigasi utama"
+    />
     <div class="main-content">
       <AppTopbar
-        :business-name="BUSINESS_NAME"
+        :brand-name="BUSINESS_NAME"
         :user-name="authStore.session?.nama ?? ''"
+        account-label="Masuk sebagai"
+        logout-label="Keluar"
         @logout="logout"
       />
       <main class="page-content">

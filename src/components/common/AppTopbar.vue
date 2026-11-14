@@ -2,11 +2,19 @@
 import BaseButton from './BaseButton.vue'
 
 const props = defineProps({
-  businessName: {
+  brandName: {
     type: String,
     required: true,
   },
   userName: {
+    type: String,
+    required: true,
+  },
+  accountLabel: {
+    type: String,
+    required: true,
+  },
+  logoutLabel: {
     type: String,
     required: true,
   },
@@ -18,9 +26,9 @@ const emit = defineEmits(['logout'])
 <template>
   <header class="app-topbar">
     <div>
-      <p class="topbar-business">{{ props.businessName }}</p>
-      <p class="topbar-user">Masuk sebagai {{ props.userName }}</p>
+      <p class="topbar-brand">{{ props.brandName }}</p>
+      <p class="topbar-user">{{ props.accountLabel }} {{ props.userName }}</p>
     </div>
-    <BaseButton label="Keluar" variant="secondary" @click="emit('logout')" />
+    <BaseButton :label="props.logoutLabel" variant="secondary" @click="emit('logout')" />
   </header>
 </template>

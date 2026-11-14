@@ -26,6 +26,10 @@ const props = defineProps({
     type: String,
     default: 'off',
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -43,6 +47,7 @@ const inputId = useId()
       :autocomplete="props.autocomplete"
       :aria-invalid="Boolean(props.error)"
       :aria-describedby="props.error ? `${inputId}-error` : undefined"
+      :disabled="props.disabled"
       @input="emit('update:modelValue', $event.target.value)"
     />
     <p v-if="props.error" :id="`${inputId}-error`" class="field-error">

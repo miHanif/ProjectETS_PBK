@@ -33,6 +33,7 @@ const emit = defineEmits(['click'])
     :aria-busy="props.loading"
     @click="emit('click', $event)"
   >
-    {{ props.loading ? 'Memproses...' : props.label }}
+    <span v-if="props.loading" class="base-button__spinner" aria-hidden="true"></span>
+    {{ props.label }}
   </button>
 </template>

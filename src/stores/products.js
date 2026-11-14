@@ -12,7 +12,11 @@ export const useProductsStore = defineStore('products', () => {
   }
 
   function addProduct(product) {
-    products.value = appendRecord(STORAGE_KEYS.PRODUCTS, products.value, product)
+    const id = Math.max(0, ...products.value.map((record) => record.id)) + 1
+    products.value = appendRecord(STORAGE_KEYS.PRODUCTS, products.value, {
+      ...product,
+      id,
+    })
   }
 
   function updateProduct(id, changes) {
@@ -23,5 +27,16 @@ export const useProductsStore = defineStore('products', () => {
     updateProduct(id, { aktif: false })
   }
 
-  return { products, initialize, addProduct, updateProduct, deactivateProduct }
+  function activateProduct(id) {
+    updateProduct(id, { aktif: true })
+  }
+
+  return {
+    products,
+    initialize,
+    addProduct,
+    updateProduct,
+    deactivateProduct,
+    activateProduct,
+  }
 })
