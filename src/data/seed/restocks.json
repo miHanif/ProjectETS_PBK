@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "tanggal": "2026-11-09",
+    "catatan": "Contoh belanja grosir perlengkapan rumah tangga"
+  },
+  {
+    "id": 2,
+    "user_id": 1,
+    "tanggal": "2026-11-12",
+    "catatan": "Contoh belanja grosir pakaian"
+  }
+]

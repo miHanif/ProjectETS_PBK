@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "transaction_id": 1,
+    "product_id": 4,
+    "jumlah": 2,
+    "harga_normal": 45000,
+    "harga_satuan": 40000,
+    "subtotal": 80000
+  },
+  {
+    "id": 2,
+    "transaction_id": 2,
+    "product_id": 1,
+    "jumlah": 1,
+    "harga_normal": 15000,
+    "harga_satuan": 15000,
+    "subtotal": 15000
+  },
+  {
+    "id": 3,
+    "transaction_id": 2,
+    "product_id": 3,
+    "jumlah": 1,
+    "harga_normal": 25000,
+    "harga_satuan": 25000,
+    "subtotal": 25000
+  },
+  {
+    "id": 4,
+    "transaction_id": 2,
+    "product_id": 7,
+    "jumlah": 3,
+    "harga_normal": 5000,
+    "harga_satuan": 5000,
+    "subtotal": 15000
+  },
+  {
+    "id": 5,
+    "transaction_id": 3,
+    "product_id": 5,
+    "jumlah": 2,
+    "harga_normal": 60000,
+    "harga_satuan": 55000,
+    "subtotal": 110000
+  },
+  {
+    "id": 6,
+    "transaction_id": 3,
+    "product_id": 9,
+    "jumlah": 1,
+    "harga_normal": 20000,
+    "harga_satuan": 10000,
+    "subtotal": 10000
+  }
+]

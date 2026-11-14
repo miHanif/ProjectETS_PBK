@@ -1,0 +1,83 @@
+[
+  {
+    "id": 1,
+    "category_id": 1,
+    "nama": "Contoh Sapu",
+    "harga_jual": 15000,
+    "stok": 20,
+    "stok_minimum": 5,
+    "aktif": true
+  },
+  {
+    "id": 2,
+    "category_id": 1,
+    "nama": "Contoh Piring Melamin",
+    "harga_jual": 12000,
+    "stok": 30,
+    "stok_minimum": 5,
+    "aktif": true
+  },
+  {
+    "id": 3,
+    "category_id": 1,
+    "nama": "Contoh Ember",
+    "harga_jual": 25000,
+    "stok": 15,
+    "stok_minimum": 5,
+    "aktif": true
+  },
+  {
+    "id": 4,
+    "category_id": 2,
+    "nama": "Contoh Daster",
+    "harga_jual": 45000,
+    "stok": 12,
+    "stok_minimum": 5,
+    "aktif": true
+  },
+  {
+    "id": 5,
+    "category_id": 2,
+    "nama": "Contoh Kaos Polos",
+    "harga_jual": 60000,
+    "stok": 18,
+    "stok_minimum": 5,
+    "aktif": true
+  },
+  {
+    "id": 6,
+    "category_id": 2,
+    "nama": "Contoh Celana Rumah",
+    "harga_jual": 75000,
+    "stok": 10,
+    "stok_minimum": 5,
+    "aktif": true
+  },
+  {
+    "id": 7,
+    "category_id": 1,
+    "nama": "Contoh Gelas Plastik",
+    "harga_jual": 5000,
+    "stok": 40,
+    "stok_minimum": 5,
+    "aktif": true
+  },
+  {
+    "id": 8,
+    "category_id": 2,
+    "nama": "Contoh Sarung Bantal",
+    "harga_jual": 30000,
+    "stok": 14,
+    "stok_minimum": 5,
+    "aktif": true
+  },
+  {
+    "id": 9,
+    "category_id": 3,
+    "nama": "Contoh Keset Kaki",
+    "harga_jual": 20000,
+    "stok": 16,
+    "stok_minimum": 5,
+    "aktif": true
+  }
+]

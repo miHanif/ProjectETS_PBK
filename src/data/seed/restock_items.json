@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "restock_id": 1,
+    "product_id": 1,
+    "jumlah": 12,
+    "harga_beli": 10000
+  },
+  {
+    "id": 2,
+    "restock_id": 1,
+    "product_id": 2,
+    "jumlah": 24,
+    "harga_beli": 8000
+  },
+  {
+    "id": 3,
+    "restock_id": 2,
+    "product_id": 4,
+    "jumlah": 6,
+    "harga_beli": 35000
+  },
+  {
+    "id": 4,
+    "restock_id": 2,
+    "product_id": 5,
+    "jumlah": 8,
+    "harga_beli": 42000
+  }
+]

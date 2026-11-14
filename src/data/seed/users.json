@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "nama": "Contoh Pemilik",
+    "username": "contoh_pemilik",
+    "password": "contoh123",
+    "role": "pemilik",
+    "aktif": true
+  },
+  {
+    "id": 2,
+    "nama": "Contoh Asisten",
+    "username": "contoh_asisten",
+    "password": "contoh123",
+    "role": "asisten",
+    "aktif": true
+  }
+]
