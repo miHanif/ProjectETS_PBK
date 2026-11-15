@@ -76,7 +76,7 @@ const router = createRouter({
           path: 'transaksi',
           name: 'transaction-history',
           component: TransactionHistoryView,
-          meta: { roles: ownerOnly },
+          meta: { roles: ownerAndAssistant },
         },
         {
           path: 'restock',

@@ -4,7 +4,15 @@ const props = defineProps({
     type: String,
     required: true,
     validator: (value) =>
-      ['aman', 'menipis', 'habis', 'aktif', 'nonaktif'].includes(value),
+      [
+        'aman',
+        'menipis',
+        'habis',
+        'aktif',
+        'nonaktif',
+        'selesai',
+        'dibatalkan',
+      ].includes(value),
   },
 })
 </script>

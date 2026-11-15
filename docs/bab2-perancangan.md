@@ -6,7 +6,7 @@ Semua nama dan angka pada contoh adalah data contoh, bukan data asli kios.
 
 Halaman (views) hanya merakit komponen fitur, dan semua komponen fitur memakai komponen common yang sama. AuthLayout dipakai halaman login, MainLayout dipakai delapan halaman lainnya. ForbiddenView (akses ditolak) dan NotFoundView (halaman tidak ditemukan) melengkapi daftar halaman.
 
-Halaman yang bisa dibuka Asisten: Login, Produk, dan Transaksi Baru. Halaman lain hanya untuk Pemilik.
+Halaman yang bisa dibuka Asisten: Login, Produk, Transaksi Baru, dan Riwayat Transaksi (hanya transaksi hari itu). Halaman lain hanya untuk Pemilik.
 
 **Pohon komponen (teks)**
 
@@ -105,6 +105,7 @@ flowchart TD
 | ReportFilter | mode (harian/bulanan), value | change |
 | SummaryCards | summary | (tidak ada) |
 | UserForm | user, errors | submit, cancel |
+| TransactionDetailModal | transaction, items, canCancel (Asisten: hanya transaksi hari itu), errors | close, cancel-transaction (alasan) |
 
 Komponen yang menerima canEdit memungkinkan satu komponen dipakai Pemilik dan Asisten tanpa menggandakan kode.
 
@@ -127,8 +128,9 @@ Konvensi (usulan): base path `/api/v1`. Ini kontrak rancangan, sedangkan impleme
 | Kategori (/kategori) | Pemilik | Ubah kategori | /api/v1/categories/{id} | PUT |
 | Kategori (/kategori) | Pemilik | Hapus kategori | /api/v1/categories/{id} | DELETE |
 | Transaksi Baru (/transaksi/baru) | Pemilik, Asisten | Catat transaksi tunai (harga per barang dapat diubah saat tawar-menawar) | /api/v1/transactions | POST |
-| Riwayat Transaksi (/transaksi) | Pemilik | Tampilkan riwayat | /api/v1/transactions | GET |
-| Riwayat Transaksi (/transaksi) | Pemilik | Detail satu transaksi | /api/v1/transactions/{id} | GET |
+| Riwayat Transaksi (/transaksi) | Pemilik, Asisten | Tampilkan riwayat (Asisten: hanya transaksi hari itu) | /api/v1/transactions | GET |
+| Riwayat Transaksi (/transaksi) | Pemilik, Asisten | Detail satu transaksi | /api/v1/transactions/{id} | GET |
+| Riwayat Transaksi (/transaksi) | Pemilik, Asisten | Batalkan transaksi dengan alasan (Asisten: hanya transaksi hari itu) | /api/v1/transactions/{id}/cancel | PATCH |
 | Restock (/restock) | Pemilik | Catat barang masuk dari grosir | /api/v1/restocks | POST |
 | Restock (/restock) | Pemilik | Tampilkan riwayat restock | /api/v1/restocks | GET |
 | Laporan (/laporan) | Pemilik | Laporan harian | /api/v1/reports/daily | GET |
@@ -192,7 +194,7 @@ Request:
 Sukses (201):
 { "status": "success", "message": "Transaksi tercatat",
   "data": { "id": 31, "tanggal": "2026-11-11T08:15:00", "user_id": 2,
-            "total": 80000, "uang_dibayar": 100000, "kembalian": 20000,
+            "total": 80000, "uang_dibayar": 100000, "kembalian": 20000, "status": "selesai",
             "items": [ { "product_id": 7, "jumlah": 2, "harga_normal": 45000,
                          "harga_satuan": 40000, "subtotal": 80000 } ] } }
 
@@ -260,16 +262,39 @@ Gagal (400):
   "errors": [ { "field": "username", "message": "Username sudah dipakai" } ] }
 ```
 
+**7. Batalkan transaksi**
+
+```json
+PATCH /api/v1/transactions/31/cancel
+
+Request:
+{ "alasan": "Contoh: salah input jumlah" }
+
+Sukses (200):
+{ "status": "success", "message": "Transaksi dibatalkan",
+  "data": { "id": 31, "status": "dibatalkan", "alasan_batal": "Contoh: salah input jumlah",
+            "dibatalkan_oleh": 2 } }
+
+Gagal (400):
+{ "status": "error", "message": "Transaksi tidak dapat dibatalkan",
+  "errors": [ { "field": "alasan", "message": "Alasan pembatalan wajib diisi" },
+              { "field": "id", "message": "Transaksi sudah dibatalkan" },
+              { "field": "id", "message": "Asisten hanya dapat membatalkan transaksi hari ini" } ] }
+```
+
+Efek samping (usulan): transaksi tidak dihapus, hanya statusnya berubah menjadi dibatalkan. Stok setiap barang pada transaksi itu dikembalikan, dan transaksi yang dibatalkan tidak dihitung di laporan. Asisten hanya dapat membatalkan transaksi hari ini, Pemilik dapat membatalkan semuanya.
+
 Endpoint lain (kategori, ubah produk, ubah akun) memakai pola yang sama. Aturan khusus (usulan): kategori yang masih dipakai produk tidak bisa dihapus (400). Produk yang sudah pernah terjual hanya dinonaktifkan (`aktif = false`), tidak dihapus, supaya riwayat transaksi tetap utuh.
 
 ## 2.3 Desain Basis Data (ERD)
 
-Basis data terdiri dari tujuh tabel yang ternormalisasi (3NF). Rekap harian tidak punya tabel sendiri karena dihitung dari tabel transactions berdasarkan tanggal. Tabel header (transactions, restocks) dan tabel item dipisah agar satu nota atau satu belanja grosir bisa memuat banyak barang.
+Basis data terdiri dari tujuh tabel yang ternormalisasi (3NF). Rekap harian tidak punya tabel sendiri karena dihitung dari tabel transactions berdasarkan tanggal, tidak termasuk transaksi berstatus dibatalkan. Tabel header (transactions, restocks) dan tabel item dipisah agar satu nota atau satu belanja grosir bisa memuat banyak barang.
 
 ```mermaid
 erDiagram
   USERS ||--o{ TRANSACTIONS : mencatat
   USERS ||--o{ RESTOCKS : mencatat
+  USERS ||--o{ TRANSACTIONS : membatalkan
   CATEGORIES ||--o{ PRODUCTS : mengelompokkan
   TRANSACTIONS ||--|{ TRANSACTION_ITEMS : memiliki
   PRODUCTS ||--o{ TRANSACTION_ITEMS : terjual_dalam
@@ -304,6 +329,9 @@ erDiagram
     int total
     int uang_dibayar
     int kembalian
+    varchar status
+    varchar alasan_batal
+    int dibatalkan_oleh FK
   }
   TRANSACTION_ITEMS {
     int id PK
@@ -334,7 +362,7 @@ erDiagram
 | Relasi | Kardinalitas | Penjelasan sesuai proses nyata |
 |---|---|---|
 | categories → products | 1 : N | Satu kategori memuat banyak produk. Satu produk punya satu kategori. |
-| users → transactions | 1 : N | Satu pengguna (Pemilik atau Asisten) bisa mencatat banyak transaksi, sehingga terlihat siapa yang melayani. |
+| users → transactions | 1 : N | Satu pengguna (Pemilik atau Asisten) bisa mencatat banyak transaksi, sehingga terlihat siapa yang melayani. Kolom dibatalkan_oleh adalah relasi kedua ke users dan mencatat siapa yang membatalkan transaksi. |
 | transactions → transaction_items | 1 : N (minimal 1) | Satu transaksi (satu nota) berisi satu atau lebih barang. |
 | products → transaction_items | 1 : N | Satu produk bisa muncul di banyak transaksi. |
 | users → restocks | 1 : N | Pemilik mencatat banyak kali belanja grosir. |
@@ -348,6 +376,8 @@ erDiagram
 - `stok_minimum` ditentukan per produk, dengan nilai awal 5 bila tidak diisi.
 - Produk tidak dihapus tetapi dinonaktifkan (`aktif = false`) agar riwayat transaksi tetap utuh.
 - Karena aplikasi hanya frontend, `password` yang tersimpan di localStorage tidak aman untuk produksi. Tulis ini sebagai keterbatasan sistem di laporan.
+
+**Pembatalan transaksi (usulan, disetujui):** kolom status bernilai selesai atau dibatalkan. Transaksi yang salah input tidak diedit atau dihapus, tetapi dibatalkan dengan alasan wajib (disimpan di alasan_batal) dan pembatalnya dicatat (dibatalkan_oleh). Stok dikembalikan, dan transaksi dibatalkan tidak dihitung di laporan. Pemilik dapat membatalkan semua transaksi, Asisten hanya transaksi hari itu.
 
 ## 2.4 Perancangan UI/UX dan Style Guide (usulan)
 
@@ -457,3 +487,4 @@ Komponen yang terlihat cocok dengan component tree: ProductFilterBar, ProductPic
 | Data seed | Sekitar 8 sampai 10 produk berlabel "Contoh ...", harga dan stok adalah angka contoh |
 | Style guide | Sesuai draf di atas (Inter, hijau #1F6F5C) |
 | Wireframe | Rancangan awal, boleh berubah saat implementasi |
+| Pembatalan transaksi | Transaksi tidak diedit atau dihapus, tetapi dibatalkan dengan alasan wajib. Stok dikembalikan dan transaksi dikecualikan dari laporan. Pemilik: semua transaksi. Asisten: hanya transaksi hari itu |

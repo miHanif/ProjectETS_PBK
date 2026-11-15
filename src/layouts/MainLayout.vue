@@ -25,6 +25,7 @@ const ownerMenu = [
 const assistantMenu = [
   { label: 'Produk', path: ROUTE_PATHS.PRODUCTS },
   { label: 'Transaksi Baru', path: ROUTE_PATHS.TRANSACTION_CREATE },
+  { label: 'Riwayat Transaksi', path: ROUTE_PATHS.TRANSACTION_HISTORY },
 ]
 
 const menuItems = computed(() =>

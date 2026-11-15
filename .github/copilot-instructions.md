@@ -26,6 +26,11 @@ tabel, atau endpoint di luarnya. Abaikan bagian bertanda [ISI] karena itu isian 
 - Setiap tambah, ubah, hapus harus langsung ditulis ke localStorage.
 - Produk tidak dihapus, hanya dinonaktifkan (aktif = false).
 - Transaksi menyimpan harga_normal dan harga_satuan (hasil tawar-menawar).
+- Transaksi tidak diedit atau dihapus. Transaksi yang salah dibatalkan: status menjadi           "dibatalkan",
+  alasan wajib diisi (alasan_batal), pembatalnya dicatat (dibatalkan_oleh), stok barangnya
+  dikembalikan, dan transaksi dibatalkan tidak dihitung di laporan.
+- Pemilik boleh membatalkan semua transaksi. Asisten hanya boleh melihat dan membatalkan
+  transaksi hari ini.
 
 ## Tampilan
 - Semua teks antarmuka dalam bahasa Indonesia. Format rupiah: Rp 45.000.

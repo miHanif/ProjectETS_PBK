@@ -43,8 +43,8 @@ Catatan stok, keuangan, dan kebutuhan lain berada dalam satu buku fisik.
 
 | Nama Role | Deskripsi Peran | Fitur yang Dapat Diakses |
 |---|---|---|
-| Pemilik (ibu) | Pemilik usaha, pengambil keputusan | Dashboard, kelola produk dan kategori, kelola harga, restock (barang masuk), peringatan stok menipis, catat transaksi tunai, riwayat transaksi, laporan harian/bulanan, kelola akun |
-| Asisten (mahasiswa) | Membantu melayani saat kios ramai | Lihat produk dan stok, catat transaksi tunai (termasuk mengubah harga saat tawar-menawar) |
+| Pemilik (ibu) | Pemilik usaha, pengambil keputusan | Dashboard, kelola produk dan kategori, kelola harga, restock (barang masuk), peringatan stok menipis, catat transaksi tunai, riwayat transaksi, pembatalan transaksi, laporan harian/bulanan, kelola akun |
+| Asisten (mahasiswa) | Membantu melayani saat kios ramai | Lihat produk dan stok, catat transaksi tunai (termasuk mengubah harga saat tawar-menawar), lihat riwayat transaksi hari itu, batalkan transaksi hari itu (dengan alasan) |
 
 **Kaitan fitur dengan kendala**
 
@@ -56,4 +56,4 @@ Catatan stok, keuangan, dan kebutuhan lain berada dalam satu buku fisik.
 | Pelanggan tidak menentu | Laporan harian/bulanan untuk melihat pola ramai dan sepi |
 | Rekap manual | Laporan harian otomatis |
 
-**Keputusan yang sudah disetujui (usulan):** harga beli dicatat saat restock (boleh dikosongkan bila ibu tidak mencatatnya), serta fitur peringatan stok menipis dan kategori produk (kategori awal: Pecah Belah dan Perlengkapan Rumah Tangga, Pakaian, Lainnya; Pemilik bisa menambah kategori).
+**Keputusan yang sudah disetujui (usulan):** harga beli dicatat saat restock (boleh dikosongkan bila ibu tidak mencatatnya), serta fitur peringatan stok menipis dan kategori produk (kategori awal: Pecah Belah dan Perlengkapan Rumah Tangga, Pakaian, Lainnya; Pemilik bisa menambah kategori). Transaksi yang salah input tidak diedit, tetapi dibatalkan dengan alasan: stok dikembalikan dan transaksi tidak dihitung di laporan. Pemilik bisa membatalkan semua transaksi, Asisten hanya transaksi hari itu.

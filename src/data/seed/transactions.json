@@ -5,7 +5,10 @@
     "tanggal": "2026-11-10T08:15:00",
     "total": 80000,
     "uang_dibayar": 100000,
-    "kembalian": 20000
+    "kembalian": 20000,
+    "status": "selesai",
+    "alasan_batal": null,
+    "dibatalkan_oleh": null
   },
   {
     "id": 2,
@@ -13,7 +16,10 @@
     "tanggal": "2026-11-12T10:30:00",
     "total": 55000,
     "uang_dibayar": 60000,
-    "kembalian": 5000
+    "kembalian": 5000,
+    "status": "selesai",
+    "alasan_batal": null,
+    "dibatalkan_oleh": null
   },
   {
     "id": 3,
@@ -21,6 +27,9 @@
     "tanggal": "2026-11-13T14:05:00",
     "total": 120000,
     "uang_dibayar": 150000,
-    "kembalian": 30000
+    "kembalian": 30000,
+    "status": "selesai",
+    "alasan_batal": null,
+    "dibatalkan_oleh": null
   }
 ]

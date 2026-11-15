@@ -84,7 +84,7 @@ Sesi login disimpan di kunci kios_session.
 ]
 
 // transactions.json dan transaction_items.json
-[ { "id": 1, "user_id": 2, "tanggal": "2026-11-10T08:15:00", "total": 80000, "uang_dibayar": 100000, "kembalian": 20000 } ]
+[ { "id": 1, "user_id": 2, "tanggal": "2026-11-10T08:15:00", "total": 80000, "uang_dibayar": 100000, "kembalian": 20000, "status": "selesai", "alasan_batal": null, "dibatalkan_oleh": null } ]
 [ { "id": 1, "transaction_id": 1, "product_id": 2, "jumlah": 2, "harga_normal": 45000, "harga_satuan": 40000, "subtotal": 80000 } ]
 
 // restocks.json dan restock_items.json

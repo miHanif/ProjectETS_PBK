@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import productsSeed from '../data/seed/products.json'
 import { STORAGE_KEYS } from '../constants/storageKeys.js'
 import { appendRecord, loadCollection, updateRecord } from './collectionStorage.js'
+import { writeStorage } from '../services/storage.js'
 
 export const useProductsStore = defineStore('products', () => {
   const products = ref([])
@@ -31,6 +32,40 @@ export const useProductsStore = defineStore('products', () => {
     updateProduct(id, { aktif: true })
   }
 
+  function adjustStock(adjustments) {
+    if (!Array.isArray(adjustments)) {
+      throw new TypeError('Perubahan stok harus berupa daftar.')
+    }
+
+    const changesById = new Map()
+    adjustments.forEach(({ productId, delta }) => {
+      if (!Number.isInteger(productId) || !Number.isInteger(delta)) {
+        throw new TypeError('Perubahan stok tidak valid.')
+      }
+
+      changesById.set(productId, (changesById.get(productId) ?? 0) + delta)
+    })
+
+    const nextProducts = products.value.map((product) => {
+      const delta = changesById.get(product.id) ?? 0
+      const stok = product.stok + delta
+
+      if (stok < 0) {
+        throw new Error(`Stok produk "${product.nama}" tidak mencukupi.`)
+      }
+
+      changesById.delete(product.id)
+      return delta === 0 ? product : { ...product, stok }
+    })
+
+    if (changesById.size > 0) {
+      throw new Error('Produk untuk perubahan stok tidak ditemukan.')
+    }
+
+    writeStorage(STORAGE_KEYS.PRODUCTS, nextProducts)
+    products.value = nextProducts
+  }
+
   return {
     products,
     initialize,
@@ -38,5 +73,6 @@ export const useProductsStore = defineStore('products', () => {
     updateProduct,
     deactivateProduct,
     activateProduct,
+    adjustStock,
   }
 })
