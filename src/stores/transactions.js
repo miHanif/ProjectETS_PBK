@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import transactionsSeed from '../data/seed/transactions.json'
 import transactionItemsSeed from '../data/seed/transaction_items.json'
 import { STORAGE_KEYS } from '../constants/storageKeys.js'
@@ -9,7 +9,7 @@ import { appendRecords, loadCollection } from './collectionStorage.js'
 import { writeStorage } from '../services/storage.js'
 import { useAuthStore } from './auth.js'
 import { useProductsStore } from './products.js'
-import { localDateKey } from '../utils/formatters.js'
+import { getReportDateRange, localDateKey } from '../utils/formatters.js'
 
 function localDateTime(date) {
   const pad = (value) => String(value).padStart(2, '0')
@@ -19,6 +19,116 @@ function localDateTime(date) {
 export const useTransactionsStore = defineStore('transactions', () => {
   const transactions = ref([])
   const transactionItems = ref([])
+  const todaySummary = computed(() => {
+    const todayTransactions = transactions.value.filter(
+      (transaction) =>
+        transaction.status === TRANSACTION_STATUSES.COMPLETED &&
+        transaction.tanggal.slice(0, 10) === localDateKey(),
+    )
+
+    return {
+      transactionCount: todayTransactions.length,
+      totalSales: todayTransactions.reduce(
+        (total, transaction) => total + transaction.total,
+        0,
+      ),
+    }
+  })
+  const reportForPeriod = computed(() => (mode, period) => {
+    const range = getReportDateRange(mode, period)
+    if (!range) {
+      return {
+        hasTransactions: false,
+        summary: { transactionCount: 0, totalSales: 0, quantitySold: 0 },
+        products: [],
+        days: [],
+      }
+    }
+
+    const periodTransactions = transactions.value.filter(
+      (transaction) =>
+        transaction.status === TRANSACTION_STATUSES.COMPLETED &&
+        transaction.tanggal.slice(0, 10) >= range.start &&
+        transaction.tanggal.slice(0, 10) <= range.end,
+    )
+    const transactionIds = new Set(periodTransactions.map(({ id }) => id))
+    const transactionDates = new Map(
+      periodTransactions.map(({ id, tanggal }) => [id, tanggal.slice(0, 10)]),
+    )
+    const productTotals = new Map()
+    const dayTotals = new Map()
+    let totalSales = 0
+    let quantitySold = 0
+
+    transactionItems.value.forEach((item) => {
+      if (!transactionIds.has(item.transaction_id)) {
+        return
+      }
+
+      const subtotal = item.jumlah * item.harga_satuan
+      const date = transactionDates.get(item.transaction_id)
+      totalSales += subtotal
+      quantitySold += item.jumlah
+
+      const productTotal = productTotals.get(item.product_id) ?? {
+        product_id: item.product_id,
+        quantitySold: 0,
+        totalSales: 0,
+      }
+      productTotal.quantitySold += item.jumlah
+      productTotal.totalSales += subtotal
+      productTotals.set(item.product_id, productTotal)
+
+      const dayTotal = dayTotals.get(date) ?? {
+        date,
+        transactionCount: 0,
+        totalSales: 0,
+      }
+      dayTotal.totalSales += subtotal
+      dayTotals.set(date, dayTotal)
+    })
+
+    periodTransactions.forEach((transaction) => {
+      const date = transaction.tanggal.slice(0, 10)
+      const dayTotal = dayTotals.get(date) ?? {
+        date,
+        transactionCount: 0,
+        totalSales: 0,
+      }
+      dayTotal.transactionCount += 1
+      dayTotals.set(date, dayTotal)
+    })
+
+    const productsStore = useProductsStore()
+    return {
+      hasTransactions: periodTransactions.length > 0,
+      summary: {
+        transactionCount: periodTransactions.length,
+        totalSales,
+        quantitySold,
+      },
+      products: Array.from(productTotals.values())
+        .map((product) => ({
+          ...product,
+          nama:
+            productsStore.products.find(
+              (record) => record.id === product.product_id,
+            )?.nama ?? `Produk #${product.product_id}`,
+        }))
+        .sort(
+          (a, b) =>
+            b.quantitySold - a.quantitySold ||
+            b.totalSales - a.totalSales ||
+            a.nama.localeCompare(b.nama, 'id'),
+        ),
+      days:
+        mode === 'bulanan'
+          ? Array.from(dayTotals.values()).sort((a, b) =>
+              a.date.localeCompare(b.date),
+            )
+          : [],
+    }
+  })
 
   function initialize() {
     const loadedTransactions = loadCollection(
@@ -221,6 +331,8 @@ export const useTransactionsStore = defineStore('transactions', () => {
   return {
     transactions,
     transactionItems,
+    todaySummary,
+    reportForPeriod,
     initialize,
     addTransaction,
     cancelTransaction,

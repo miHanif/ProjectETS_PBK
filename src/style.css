@@ -819,6 +819,128 @@ h3 {
   margin-top: var(--space-2);
 }
 
+.cart-item .cart-item__cost-warning {
+  padding: var(--space-1);
+  border-radius: var(--radius);
+  background: var(--color-warning-soft);
+  color: #76500b;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.low-stock-card,
+.restock-card {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.low-stock-heading,
+.restock-item__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.low-stock-heading h2,
+.restock-card h2,
+.restock-item__heading h3 {
+  margin: 0;
+}
+
+.restock-link {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.restock-header-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.restock-items {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.restock-item {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.restock-item__inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.restock-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-1);
+}
+
+.restock-table {
+  min-width: 700px;
+}
+
+.restock-detail-list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.restock-detail-list li {
+  display: grid;
+  gap: var(--space-1);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.report-filter {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.report-tables {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.report-tables h2 {
+  margin-bottom: var(--space-2);
+}
+
+.report-table,
+.user-table {
+  min-width: 640px;
+}
+
+.user-table td:last-child {
+  min-width: 240px;
+}
+
 @media (max-width: 700px) {
   .login-card,
   .message-card {
@@ -865,5 +987,12 @@ h3 {
   .history-filter {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .summary-cards,
+  .restock-header-fields,
+  .restock-item__inputs,
+  .report-filter {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

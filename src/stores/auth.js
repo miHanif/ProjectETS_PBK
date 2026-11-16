@@ -93,5 +93,20 @@ export const useAuthStore = defineStore('auth', () => {
     session.value = null
   }
 
-  return { session, initialize, login, logout }
+  function syncUser(user) {
+    if (session.value?.id !== user.id) {
+      return
+    }
+
+    if (!user.aktif) {
+      logout()
+      return
+    }
+
+    const nextSession = createSession(user)
+    writeStorage(STORAGE_KEYS.SESSION, nextSession)
+    session.value = nextSession
+  }
+
+  return { session, initialize, login, logout, syncUser }
 })

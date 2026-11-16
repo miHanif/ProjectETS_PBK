@@ -58,6 +58,17 @@ function subtotal(item) {
       <p v-if="Number(item.harga_satuan) < item.harga_normal" class="cart-item__nego">
         Harga disepakati di bawah harga normal
       </p>
+      <p
+        v-if="
+          item.harga_beli_terakhir !== null &&
+          item.harga_beli_terakhir !== undefined &&
+          Number(item.harga_satuan) < item.harga_beli_terakhir
+        "
+        class="cart-item__cost-warning"
+      >
+        Harga di bawah harga beli terakhir
+        ({{ formatRupiah(item.harga_beli_terakhir) }}). Transaksi tetap dapat disimpan.
+      </p>
       <p class="cart-item__subtotal">Subtotal: {{ formatRupiah(subtotal(item)) }}</p>
     </li>
   </ul>

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import productsSeed from '../data/seed/products.json'
 import { STORAGE_KEYS } from '../constants/storageKeys.js'
 import { appendRecord, loadCollection, updateRecord } from './collectionStorage.js'
@@ -7,6 +7,12 @@ import { writeStorage } from '../services/storage.js'
 
 export const useProductsStore = defineStore('products', () => {
   const products = ref([])
+  const lowStockProducts = computed(() =>
+    products.value.filter(
+      (product) => product.aktif && product.stok <= product.stok_minimum,
+    ),
+  )
+  const lowStockCount = computed(() => lowStockProducts.value.length)
 
   function initialize() {
     products.value = loadCollection(STORAGE_KEYS.PRODUCTS, productsSeed)
@@ -50,7 +56,7 @@ export const useProductsStore = defineStore('products', () => {
       const delta = changesById.get(product.id) ?? 0
       const stok = product.stok + delta
 
-      if (stok < 0) {
+      if (!Number.isSafeInteger(stok) || stok < 0) {
         throw new Error(`Stok produk "${product.nama}" tidak mencukupi.`)
       }
 
@@ -68,6 +74,8 @@ export const useProductsStore = defineStore('products', () => {
 
   return {
     products,
+    lowStockProducts,
+    lowStockCount,
     initialize,
     addProduct,
     updateProduct,

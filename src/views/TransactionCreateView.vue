@@ -7,14 +7,23 @@ import PaymentPanel from '../components/features/transactions/PaymentPanel.vue'
 import ProductPicker from '../components/features/transactions/ProductPicker.vue'
 import { useCategoriesStore } from '../stores/categories.js'
 import { useProductsStore } from '../stores/products.js'
+import { useRestocksStore } from '../stores/restocks.js'
 import { useTransactionsStore } from '../stores/transactions.js'
 
 const productsStore = useProductsStore()
 const categoriesStore = useCategoriesStore()
+const restocksStore = useRestocksStore()
 const transactionsStore = useTransactionsStore()
 const cart = ref([])
 const uangDibayar = ref('')
 const notice = ref({ type: '', message: '' })
+const cartWithPurchasePrices = computed(() =>
+  cart.value.map((item) => ({
+    ...item,
+    harga_beli_terakhir:
+      restocksStore.latestPurchasePrices[item.productId] ?? null,
+  })),
+)
 const total = computed(() =>
   cart.value.reduce((sum, item) => {
     const subtotal = Number(item.jumlah) * Number(item.harga_satuan)
@@ -95,7 +104,7 @@ function saveTransaction() {
       <section class="transaction-card">
         <h2>Keranjang</h2>
         <CartList
-          :items="cart"
+          :items="cartWithPurchasePrices"
           @update-item="updateCartItem"
           @remove-item="removeCartItem"
         />
