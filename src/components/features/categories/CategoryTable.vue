@@ -7,17 +7,13 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-  products: {
-    type: Array,
-    default: () => [],
+  productCounts: {
+    type: Object,
+    required: true,
   },
 })
 
 const emit = defineEmits(['edit', 'delete'])
-
-function productCount(categoryId) {
-  return props.products.filter((product) => product.category_id === categoryId).length
-}
 </script>
 
 <template>
@@ -33,7 +29,7 @@ function productCount(categoryId) {
       <tbody>
         <tr v-for="category in props.categories" :key="category.id">
           <td>{{ category.nama }}</td>
-          <td>{{ productCount(category.id) }}</td>
+          <td>{{ props.productCounts[category.id] ?? 0 }}</td>
           <td>
             <div class="feature-table-actions">
               <BaseButton

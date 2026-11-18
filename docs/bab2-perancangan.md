@@ -85,7 +85,7 @@ flowchart TD
 | ConfirmDialog | open, message, confirmLabel | confirm, cancel |
 | DataTable | columns, rows, emptyText | row-click |
 | StatCard | title, value, variant | (tidak ada) |
-| StatusBadge | status (aman/menipis/habis/aktif/nonaktif) | (tidak ada) |
+| StatusBadge | label, variant (sukses/peringatan/bahaya/netral) | (tidak ada) |
 | AlertMessage | type (sukses/peringatan/bahaya), message | dismiss |
 | EmptyState | message | (tidak ada) |
 | PageHeader | title, subtitle | (tidak ada) |
@@ -157,7 +157,7 @@ Sukses (200):
   "data": { "user": { "id": 1, "nama": "Contoh Pemilik", "role": "pemilik" } } }
 
 Gagal (400):
-{ "status": "error", "message": "Username atau kata sandi salah",
+{ "status": "error", "message": "Nama pengguna atau kata sandi salah",
   "errors": [{ "field": "password", "message": "Kata sandi tidak sesuai" }] }
 ```
 
@@ -259,7 +259,7 @@ Sukses (201):
 
 Gagal (400):
 { "status": "error", "message": "Data akun tidak valid",
-  "errors": [ { "field": "username", "message": "Username sudah dipakai" } ] }
+  "errors": [ { "field": "username", "message": "Nama pengguna sudah dipakai" } ] }
 ```
 
 **7. Batalkan transaksi**
@@ -463,7 +463,7 @@ Komponen yang terlihat cocok dengan component tree: ProductFilterBar, ProductPic
 │           Nama Usaha [ISI]           │
 │            Masuk ke Sistem           │
 │                                      │
-│  Username                            │
+│  Nama pengguna                       │
 │  [____________________________]      │
 │  Kata sandi                          │
 │  [____________________________]      │

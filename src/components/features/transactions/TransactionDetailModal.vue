@@ -5,7 +5,11 @@ import BaseInput from '../../common/BaseInput.vue'
 import BaseModal from '../../common/BaseModal.vue'
 import StatusBadge from '../../common/StatusBadge.vue'
 import { TRANSACTION_STATUSES } from '../../../constants/business.js'
-import { formatRupiah, formatDateTime } from '../../../utils/formatters.js'
+import {
+  formatDateTime,
+  formatRupiah,
+  getStatusPresentation,
+} from '../../../utils/formatters.js'
 
 const props = defineProps({
   open: { type: Boolean, required: true },
@@ -45,7 +49,10 @@ function confirmCancellation() {
   >
     <template v-if="props.transaction">
       <p>Tanggal: {{ formatDateTime(props.transaction.tanggal) }}</p>
-      <p>Status: <StatusBadge :status="props.transaction.status" /></p>
+      <p>
+        Status:
+        <StatusBadge v-bind="getStatusPresentation(props.transaction.status)" />
+      </p>
       <p v-if="props.transaction.alasan_batal">
         Alasan pembatalan: {{ props.transaction.alasan_batal }}
       </p>

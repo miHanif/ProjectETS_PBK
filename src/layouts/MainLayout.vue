@@ -17,7 +17,7 @@ const ownerMenu = [
   { label: 'Kategori', path: ROUTE_PATHS.CATEGORIES },
   { label: 'Transaksi Baru', path: ROUTE_PATHS.TRANSACTION_CREATE },
   { label: 'Riwayat Transaksi', path: ROUTE_PATHS.TRANSACTION_HISTORY },
-  { label: 'Restock', path: ROUTE_PATHS.RESTOCK },
+  { label: 'Barang Masuk', path: ROUTE_PATHS.RESTOCK },
   { label: 'Laporan', path: ROUTE_PATHS.REPORTS },
   { label: 'Kelola Akun', path: ROUTE_PATHS.ACCOUNTS },
 ]

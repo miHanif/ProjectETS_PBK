@@ -8,10 +8,8 @@ import PageHeader from '../components/common/PageHeader.vue'
 import CategoryForm from '../components/features/categories/CategoryForm.vue'
 import CategoryTable from '../components/features/categories/CategoryTable.vue'
 import { useCategoriesStore } from '../stores/categories.js'
-import { useProductsStore } from '../stores/products.js'
 
 const categoriesStore = useCategoriesStore()
-const productsStore = useProductsStore()
 const categoryModalOpen = ref(false)
 const editingCategory = ref(null)
 const categoryToDelete = ref(null)
@@ -59,9 +57,7 @@ function saveCategory(category) {
 }
 
 function requestCategoryDeletion(category) {
-  const productCount = productsStore.products.filter(
-    (product) => product.category_id === category.id,
-  ).length
+  const productCount = categoriesStore.productCountsByCategory[category.id] ?? 0
 
   if (productCount > 0) {
     showNotice(
@@ -112,7 +108,7 @@ function deleteSelectedCategory() {
 
     <CategoryTable
       :categories="categoriesStore.categories"
-      :products="productsStore.products"
+      :product-counts="categoriesStore.productCountsByCategory"
       @edit="openCategoryForm"
       @delete="requestCategoryDeletion"
     />

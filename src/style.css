@@ -424,21 +424,17 @@ h3 {
   font-weight: 600;
 }
 
-.status-badge--aman,
-.status-badge--aktif,
-.status-badge--selesai {
+.status-badge--sukses {
   background: var(--color-success-soft);
   color: var(--color-success);
 }
 
-.status-badge--menipis {
+.status-badge--peringatan {
   background: var(--color-warning-soft);
   color: #76500b;
 }
 
-.status-badge--habis,
-.status-badge--nonaktif,
-.status-badge--dibatalkan {
+.status-badge--bahaya {
   background: var(--color-danger-soft);
   color: var(--color-danger);
 }

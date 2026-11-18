@@ -3,6 +3,7 @@ import BaseButton from '../../common/BaseButton.vue'
 import EmptyState from '../../common/EmptyState.vue'
 import StatusBadge from '../../common/StatusBadge.vue'
 import { USER_ROLES } from '../../../constants/roles.js'
+import { getStatusPresentation } from '../../../utils/formatters.js'
 
 const props = defineProps({
   users: { type: Array, required: true },
@@ -29,8 +30,8 @@ function mayDeactivate(user) {
       <thead>
         <tr>
           <th>Nama</th>
-          <th>Username</th>
-          <th>Role</th>
+          <th>Nama pengguna</th>
+          <th>Peran</th>
           <th>Status</th>
           <th>Aksi</th>
         </tr>
@@ -40,7 +41,11 @@ function mayDeactivate(user) {
           <td>{{ user.nama }}</td>
           <td>{{ user.username }}</td>
           <td>{{ user.role }}</td>
-          <td><StatusBadge :status="user.aktif ? 'aktif' : 'nonaktif'" /></td>
+          <td>
+            <StatusBadge
+              v-bind="getStatusPresentation(user.aktif ? 'aktif' : 'nonaktif')"
+            />
+          </td>
           <td>
             <div class="feature-table-actions">
               <BaseButton

@@ -1,6 +1,7 @@
 <script setup>
 import EmptyState from '../../common/EmptyState.vue'
 import StatusBadge from '../../common/StatusBadge.vue'
+import { getStatusPresentation } from '../../../utils/formatters.js'
 
 const props = defineProps({
   rows: { type: Array, required: true },
@@ -30,7 +31,7 @@ const emit = defineEmits(['select-transaction'])
           <td>{{ row.tanggalLabel }}</td>
           <td>{{ row.kasir }}</td>
           <td>{{ row.totalLabel }}</td>
-          <td><StatusBadge :status="row.status" /></td>
+          <td><StatusBadge v-bind="getStatusPresentation(row.status)" /></td>
         </tr>
       </tbody>
     </table>

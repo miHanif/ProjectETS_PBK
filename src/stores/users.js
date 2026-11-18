@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import usersSeed from '../data/seed/users.json'
+import { MIN_PASSWORD_LENGTH } from '../constants/business.js'
 import { USER_ROLES } from '../constants/roles.js'
 import { STORAGE_KEYS } from '../constants/storageKeys.js'
 import { appendRecord, loadCollection, updateRecord } from './collectionStorage.js'
@@ -35,10 +36,10 @@ export const useUsersStore = defineStore('users', () => {
       throw new Error('Nama wajib diisi.')
     }
     if (!username) {
-      throw new Error('Username wajib diisi.')
+      throw new Error('Nama pengguna wajib diisi.')
     }
     if (/\s/.test(username)) {
-      throw new Error('Username tidak boleh mengandung spasi.')
+      throw new Error('Nama pengguna tidak boleh mengandung spasi.')
     }
     if (
       users.value.some(
@@ -47,22 +48,22 @@ export const useUsersStore = defineStore('users', () => {
           user.username.toLocaleLowerCase() === username.toLocaleLowerCase(),
       )
     ) {
-      throw new Error('Username sudah digunakan.')
+      throw new Error('Nama pengguna sudah digunakan.')
     }
     if (!Object.values(USER_ROLES).includes(role)) {
-      throw new Error('Role wajib dipilih.')
+      throw new Error('Peran wajib dipilih.')
     }
 
     let password
     if (!currentUser) {
       password = input.password
-      if (typeof password !== 'string' || password.length < 6) {
-        throw new Error('Kata sandi minimal 6 karakter.')
+      if (typeof password !== 'string' || password.length < MIN_PASSWORD_LENGTH) {
+        throw new Error(`Kata sandi minimal ${MIN_PASSWORD_LENGTH} karakter.`)
       }
     } else if (input.password !== undefined && input.password !== '') {
       password = input.password
-      if (typeof password !== 'string' || password.length < 6) {
-        throw new Error('Kata sandi minimal 6 karakter.')
+      if (typeof password !== 'string' || password.length < MIN_PASSWORD_LENGTH) {
+        throw new Error(`Kata sandi minimal ${MIN_PASSWORD_LENGTH} karakter.`)
       }
     }
 
@@ -117,7 +118,7 @@ export const useUsersStore = defineStore('users', () => {
       normalized.role !== USER_ROLES.OWNER &&
       activeOwnerCount() <= 1
     ) {
-      throw new Error('Pemilik aktif terakhir tidak dapat mengubah role.')
+      throw new Error('Pemilik aktif terakhir tidak dapat mengubah peran.')
     }
 
     users.value = updateRecord(
@@ -160,6 +161,7 @@ export const useUsersStore = defineStore('users', () => {
 
   return {
     users,
+    activeOwnerCount,
     initialize,
     addUser,
     updateUser,

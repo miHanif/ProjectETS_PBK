@@ -1,24 +1,20 @@
 <script setup>
 const props = defineProps({
-  status: {
+  label: {
+    type: String,
+    required: true,
+  },
+  variant: {
     type: String,
     required: true,
     validator: (value) =>
-      [
-        'aman',
-        'menipis',
-        'habis',
-        'aktif',
-        'nonaktif',
-        'selesai',
-        'dibatalkan',
-      ].includes(value),
+      ['sukses', 'peringatan', 'bahaya', 'netral'].includes(value),
   },
 })
 </script>
 
 <template>
-  <span :class="['status-badge', `status-badge--${props.status}`]">
-    {{ props.status }}
+  <span :class="['status-badge', `status-badge--${props.variant}`]">
+    {{ props.label }}
   </span>
 </template>

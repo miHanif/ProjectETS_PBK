@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import categoriesSeed from '../data/seed/categories.json'
 import { STORAGE_KEYS } from '../constants/storageKeys.js'
 import {
@@ -12,6 +12,13 @@ import { useProductsStore } from './products.js'
 
 export const useCategoriesStore = defineStore('categories', () => {
   const categories = ref([])
+  const productCountsByCategory = computed(() => {
+    const productsStore = useProductsStore()
+    return productsStore.products.reduce((counts, product) => {
+      counts[product.category_id] = (counts[product.category_id] ?? 0) + 1
+      return counts
+    }, {})
+  })
 
   function initialize() {
     categories.value = loadCollection(STORAGE_KEYS.CATEGORIES, categoriesSeed)
@@ -64,5 +71,12 @@ export const useCategoriesStore = defineStore('categories', () => {
     categories.value = removeRecord(STORAGE_KEYS.CATEGORIES, categories.value, id)
   }
 
-  return { categories, initialize, addCategory, updateCategory, removeCategory }
+  return {
+    categories,
+    productCountsByCategory,
+    initialize,
+    addCategory,
+    updateCategory,
+    removeCategory,
+  }
 })

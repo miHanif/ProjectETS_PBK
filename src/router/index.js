@@ -14,7 +14,6 @@ import RestockView from '../views/RestockView.vue'
 import TransactionCreateView from '../views/TransactionCreateView.vue'
 import TransactionHistoryView from '../views/TransactionHistoryView.vue'
 import UserManagementView from '../views/UserManagementView.vue'
-import KomponenDemoView from '../views/KomponenDemoView.vue'
 
 const ownerOnly = [USER_ROLES.OWNER]
 const ownerAndAssistant = [USER_ROLES.OWNER, USER_ROLES.ASSISTANT]
@@ -95,11 +94,6 @@ const router = createRouter({
           name: 'accounts',
           component: UserManagementView,
           meta: { roles: ownerOnly },
-        },
-        {
-          path: 'komponen',
-          name: 'komponen-demo',
-          component: KomponenDemoView,
         },
       ],
     },

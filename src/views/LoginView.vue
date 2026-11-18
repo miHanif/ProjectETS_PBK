@@ -15,7 +15,7 @@ async function login(credentials) {
   const success = authStore.login(credentials.username, credentials.password)
 
   if (!success) {
-    errorMessage.value = 'Username atau kata sandi salah'
+    errorMessage.value = 'Nama pengguna atau kata sandi salah'
     return
   }
 

@@ -4,6 +4,7 @@ import BaseButton from '../../common/BaseButton.vue'
 import BaseInput from '../../common/BaseInput.vue'
 import BaseSelect from '../../common/BaseSelect.vue'
 import { USER_ROLE_OPTIONS, USER_ROLES } from '../../../constants/roles.js'
+import { MIN_PASSWORD_LENGTH } from '../../../constants/business.js'
 
 const props = defineProps({
   account: { type: Object, default: null },
@@ -40,8 +41,8 @@ function submit() {
   const username = form.username.trim()
 
   if (!nama) errors.nama = 'Nama wajib diisi.'
-  if (!username) errors.username = 'Username wajib diisi.'
-  else if (/\s/.test(username)) errors.username = 'Username tidak boleh mengandung spasi.'
+  if (!username) errors.username = 'Nama pengguna wajib diisi.'
+  else if (/\s/.test(username)) errors.username = 'Nama pengguna tidak boleh mengandung spasi.'
   else if (
     props.users.some(
       (user) =>
@@ -49,15 +50,19 @@ function submit() {
         user.username.toLocaleLowerCase() === username.toLocaleLowerCase(),
     )
   ) {
-    errors.username = 'Username sudah digunakan.'
+    errors.username = 'Nama pengguna sudah digunakan.'
   }
-  if (!props.account && form.password.length < 6) {
-    errors.password = 'Kata sandi minimal 6 karakter.'
-  } else if (props.account && form.password && form.password.length < 6) {
-    errors.password = 'Kata sandi minimal 6 karakter.'
+  if (!props.account && form.password.length < MIN_PASSWORD_LENGTH) {
+    errors.password = `Kata sandi minimal ${MIN_PASSWORD_LENGTH} karakter.`
+  } else if (
+    props.account &&
+    form.password &&
+    form.password.length < MIN_PASSWORD_LENGTH
+  ) {
+    errors.password = `Kata sandi minimal ${MIN_PASSWORD_LENGTH} karakter.`
   }
   if (!USER_ROLE_OPTIONS.some((option) => option.value === form.role)) {
-    errors.role = 'Role wajib dipilih.'
+    errors.role = 'Peran wajib dipilih.'
   }
   if (
     props.account?.aktif &&
@@ -65,7 +70,7 @@ function submit() {
     form.role !== USER_ROLES.OWNER &&
     props.activeOwnerCount <= 1
   ) {
-    errors.role = 'Pemilik aktif terakhir tidak dapat mengubah role.'
+    errors.role = 'Pemilik aktif terakhir tidak dapat mengubah peran.'
   }
 
   if (Object.values(errors).some(Boolean)) return
@@ -91,7 +96,7 @@ function submit() {
     />
     <BaseInput
       v-model="form.username"
-      label="Username"
+      label="Nama pengguna"
       :error="errors.username || props.errors.username"
     />
     <BaseInput
@@ -103,8 +108,8 @@ function submit() {
     />
     <BaseSelect
       v-model="form.role"
-      label="Role"
-      :options="[{ label: 'Pilih role', value: '' }, ...USER_ROLE_OPTIONS]"
+      label="Peran"
+      :options="[{ label: 'Pilih peran', value: '' }, ...USER_ROLE_OPTIONS]"
       :error="errors.role || props.errors.role"
     />
     <div class="feature-form-actions">

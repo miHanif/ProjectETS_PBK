@@ -26,8 +26,8 @@ function submit() {
   <form class="login-form" @submit.prevent="submit">
     <BaseInput
       v-model="username"
-      label="Username"
-      placeholder="Masukkan username"
+      label="Nama pengguna"
+      placeholder="Masukkan nama pengguna"
       autocomplete="username"
     />
     <BaseInput

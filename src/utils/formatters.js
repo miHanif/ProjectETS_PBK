@@ -1,9 +1,34 @@
+import { TRANSACTION_STATUSES } from '../constants/business.js'
+
 const rupiahFormatter = new Intl.NumberFormat('id-ID', {
   maximumFractionDigits: 0,
 })
 
+const statusPresentations = Object.freeze({
+  aman: { label: 'Aman', variant: 'sukses' },
+  menipis: { label: 'Menipis', variant: 'peringatan' },
+  habis: { label: 'Habis', variant: 'bahaya' },
+  aktif: { label: 'Aktif', variant: 'sukses' },
+  nonaktif: { label: 'Nonaktif', variant: 'bahaya' },
+  [TRANSACTION_STATUSES.COMPLETED]: {
+    label: 'Selesai',
+    variant: 'sukses',
+  },
+  [TRANSACTION_STATUSES.CANCELLED]: {
+    label: 'Dibatalkan',
+    variant: 'bahaya',
+  },
+})
+
 export function formatRupiah(value) {
   return `Rp ${rupiahFormatter.format(Number(value) || 0)}`
+}
+
+export function getStatusPresentation(status) {
+  return statusPresentations[status] ?? {
+    label: String(status),
+    variant: 'netral',
+  }
 }
 
 export function localDateKey(date = new Date()) {

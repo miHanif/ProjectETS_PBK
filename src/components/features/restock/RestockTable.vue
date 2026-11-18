@@ -13,7 +13,7 @@ const selectedRestock = ref(null)
 
 <template>
   <section>
-    <h2>Riwayat Restock</h2>
+    <h2>Riwayat Barang Masuk</h2>
     <div v-if="props.rows.length" class="feature-table-wrapper">
       <table class="data-table restock-table">
         <thead>
@@ -42,14 +42,14 @@ const selectedRestock = ref(null)
         </tbody>
       </table>
     </div>
-    <EmptyState v-else message="Belum ada riwayat restock." />
+    <EmptyState v-else message="Belum ada riwayat barang masuk." />
 
     <BaseModal
       :open="Boolean(selectedRestock)"
       :title="
         selectedRestock
-          ? `Detail restock ${selectedRestock.tanggalLabel}`
-          : 'Detail restock'
+          ? `Detail barang masuk ${selectedRestock.tanggalLabel}`
+          : 'Detail barang masuk'
       "
       close-label="Tutup detail"
       @close="selectedRestock = null"

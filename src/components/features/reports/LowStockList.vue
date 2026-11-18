@@ -2,6 +2,7 @@
 import EmptyState from '../../common/EmptyState.vue'
 import StatusBadge from '../../common/StatusBadge.vue'
 import { ROUTE_PATHS } from '../../../constants/routes.js'
+import { getStatusPresentation } from '../../../utils/formatters.js'
 
 const props = defineProps({
   products: { type: Array, required: true },
@@ -13,7 +14,7 @@ const props = defineProps({
     <div class="low-stock-heading">
       <h2>Stok Menipis</h2>
       <RouterLink :to="ROUTE_PATHS.RESTOCK" class="restock-link">
-        Catat Restock
+        Catat barang masuk
       </RouterLink>
     </div>
     <div v-if="props.products.length" class="feature-table-wrapper">
@@ -32,7 +33,11 @@ const props = defineProps({
             <td>{{ product.stok }}</td>
             <td>{{ product.stok_minimum }}</td>
             <td>
-              <StatusBadge :status="product.stok === 0 ? 'habis' : 'menipis'" />
+              <StatusBadge
+                v-bind="
+                  getStatusPresentation(product.stok === 0 ? 'habis' : 'menipis')
+                "
+              />
             </td>
           </tr>
         </tbody>

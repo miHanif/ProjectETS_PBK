@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import BaseButton from '../../common/BaseButton.vue'
 import EmptyState from '../../common/EmptyState.vue'
 import StatusBadge from '../../common/StatusBadge.vue'
+import { formatRupiah, getStatusPresentation } from '../../../utils/formatters.js'
 
 const props = defineProps({
   products: {
@@ -24,20 +25,12 @@ const categoryNames = computed(
   () => new Map(props.categories.map((category) => [category.id, category.nama])),
 )
 
-const rupiahFormatter = new Intl.NumberFormat('id-ID', {
-  maximumFractionDigits: 0,
-})
-
 function stockStatus(product) {
   if (product.stok <= 0) {
     return 'habis'
   }
 
   return product.stok <= product.stok_minimum ? 'menipis' : 'aman'
-}
-
-function formatPrice(value) {
-  return `Rp ${rupiahFormatter.format(value)}`
 }
 </script>
 
@@ -59,11 +52,13 @@ function formatPrice(value) {
         <tr v-for="product in props.products" :key="product.id">
           <td>{{ product.nama }}</td>
           <td>{{ categoryNames.get(product.category_id) ?? 'Kategori tidak tersedia' }}</td>
-          <td>{{ formatPrice(product.harga_jual) }}</td>
+          <td>{{ formatRupiah(product.harga_jual) }}</td>
           <td>{{ product.stok }} / {{ product.stok_minimum }}</td>
-          <td><StatusBadge :status="stockStatus(product)" /></td>
+          <td><StatusBadge v-bind="getStatusPresentation(stockStatus(product))" /></td>
           <td>
-            <StatusBadge :status="product.aktif ? 'aktif' : 'nonaktif'" />
+            <StatusBadge
+              v-bind="getStatusPresentation(product.aktif ? 'aktif' : 'nonaktif')"
+            />
           </td>
           <td v-if="props.canEdit">
             <div class="feature-table-actions">

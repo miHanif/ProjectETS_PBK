@@ -74,7 +74,7 @@ function submit() {
     nextErrors.tanggal = 'Tanggal tidak boleh di masa depan.'
   }
   if (!items.value.length) {
-    nextErrors.form = 'Restock harus memiliki minimal satu item.'
+    nextErrors.form = 'Barang masuk harus memiliki minimal satu item.'
   }
 
   items.value.forEach((item, index) => {
@@ -122,7 +122,7 @@ function submit() {
 
 <template>
   <section class="restock-card">
-    <h2>Catat Restock</h2>
+    <h2>Catat Barang Masuk</h2>
     <div class="restock-header-fields">
       <BaseInput v-model="tanggal" type="date" label="Tanggal" :error="errors.tanggal" />
       <BaseInput v-model="catatan" label="Catatan (opsional)" />
@@ -142,7 +142,7 @@ function submit() {
     </div>
     <div class="restock-form-actions">
       <BaseButton label="+ Tambah Barang" variant="secondary" @click="addItem" />
-      <BaseButton label="Simpan Restock" @click="submit" />
+      <BaseButton label="Simpan Barang Masuk" @click="submit" />
     </div>
   </section>
 </template>

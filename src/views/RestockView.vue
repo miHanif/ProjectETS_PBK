@@ -35,7 +35,7 @@ function saveRestock(payload) {
     formResetKey.value += 1
     notice.value = {
       type: 'sukses',
-      message: `Restock tanggal ${restock.tanggal} berhasil disimpan.`,
+      message: `Barang masuk tanggal ${restock.tanggal} berhasil disimpan.`,
     }
   } catch (error) {
     notice.value = {
@@ -49,7 +49,7 @@ function saveRestock(payload) {
 <template>
   <section class="page feature-page">
     <PageHeader
-      title="Restock"
+      title="Barang Masuk"
       subtitle="Catat barang masuk dari grosir dan perbarui stok produk."
     />
     <AlertMessage

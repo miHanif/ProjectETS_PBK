@@ -7,7 +7,6 @@ import ConfirmDialog from '../components/common/ConfirmDialog.vue'
 import PageHeader from '../components/common/PageHeader.vue'
 import UserForm from '../components/features/users/UserForm.vue'
 import UserTable from '../components/features/users/UserTable.vue'
-import { USER_ROLES } from '../constants/roles.js'
 import { useAuthStore } from '../stores/auth.js'
 import { useUsersStore } from '../stores/users.js'
 
@@ -18,13 +17,7 @@ const editingUser = ref(null)
 const userToToggle = ref(null)
 const formErrors = ref({})
 const notice = ref({ type: '', message: '' })
-const activeOwnerCount = computed(
-  () =>
-    usersStore.users.filter(
-      (user) => user.aktif && user.role === USER_ROLES.OWNER,
-    )
-      .length,
-)
+const activeOwnerCount = computed(() => usersStore.activeOwnerCount())
 const toggleMessage = computed(() => {
   if (!userToToggle.value) return ''
   return userToToggle.value.aktif

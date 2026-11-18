@@ -88,28 +88,28 @@ export const useRestocksStore = defineStore('restocks', () => {
     const productsStore = useProductsStore()
 
     if (!authStore.session || authStore.session.role !== USER_ROLES.OWNER) {
-      throw new Error('Hanya Pemilik yang dapat mencatat restock.')
+      throw new Error('Hanya Pemilik yang dapat mencatat barang masuk.')
     }
     if (!isValidDateKey(tanggal)) {
       throw new Error('Tanggal wajib diisi dengan format yang valid.')
     }
     if (tanggal > localDateKey()) {
-      throw new Error('Tanggal restock tidak boleh di masa depan.')
+      throw new Error('Tanggal barang masuk tidak boleh di masa depan.')
     }
     if (!Array.isArray(items) || items.length === 0) {
-      throw new Error('Restock harus memiliki minimal satu item.')
+      throw new Error('Barang masuk harus memiliki minimal satu item.')
     }
 
     const normalizedItems = items.map((item) => {
       if (!item || typeof item !== 'object' || Array.isArray(item)) {
-        throw new Error('Produk wajib dipilih untuk setiap item restock.')
+        throw new Error('Produk wajib dipilih untuk setiap barang masuk.')
       }
       if (
         item.product_id === null ||
         item.product_id === undefined ||
         String(item.product_id).trim() === ''
       ) {
-        throw new Error('Produk wajib dipilih untuk setiap item restock.')
+        throw new Error('Produk wajib dipilih untuk setiap barang masuk.')
       }
 
       const productId = Number(item.product_id)
@@ -117,7 +117,7 @@ export const useRestocksStore = defineStore('restocks', () => {
         (record) => record.id === productId,
       )
       if (!Number.isInteger(productId) || !product) {
-        throw new Error('Produk wajib dipilih untuk setiap item restock.')
+        throw new Error('Produk wajib dipilih untuk setiap barang masuk.')
       }
 
       const jumlah = Number(item.jumlah)

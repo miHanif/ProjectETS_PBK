@@ -3,6 +3,7 @@ import { reactive, ref, watch } from 'vue'
 import BaseButton from '../../common/BaseButton.vue'
 import BaseInput from '../../common/BaseInput.vue'
 import BaseSelect from '../../common/BaseSelect.vue'
+import { DEFAULT_STOCK_MINIMUM } from '../../../constants/business.js'
 
 const props = defineProps({
   product: {
@@ -25,7 +26,7 @@ const form = reactive({
   category_id: '',
   harga_jual: '',
   stok: '',
-  stok_minimum: '5',
+  stok_minimum: String(DEFAULT_STOCK_MINIMUM),
 })
 const validationErrors = ref({})
 const formError = ref('')
@@ -44,7 +45,9 @@ function resetForm(product) {
     category_id: product ? String(product.category_id) : '',
     harga_jual: product ? String(product.harga_jual) : '',
     stok: product ? String(product.stok) : '',
-    stok_minimum: product ? String(product.stok_minimum) : '5',
+    stok_minimum: product
+      ? String(product.stok_minimum)
+      : String(DEFAULT_STOCK_MINIMUM),
   })
   validationErrors.value = {}
 }
@@ -62,7 +65,10 @@ function submit() {
   const errors = {}
   const hargaJual = Number(form.harga_jual)
   const stok = Number(form.stok)
-  const minimum = form.stok_minimum.trim() === '' ? 5 : Number(form.stok_minimum)
+  const minimum =
+    form.stok_minimum.trim() === ''
+      ? DEFAULT_STOCK_MINIMUM
+      : Number(form.stok_minimum)
 
   if (!form.nama.trim()) {
     errors.nama = 'Nama wajib diisi.'
