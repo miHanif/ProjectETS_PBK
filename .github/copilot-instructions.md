@@ -40,3 +40,5 @@ tabel, atau endpoint di luarnya. Abaikan bagian bertanda [ISI] karena itu isian 
 ## Cara bekerja
 - Kerjakan hanya yang diminta di prompt. Jangan mengubah file lain tanpa alasan.
 - Setelah selesai, sebutkan file yang dibuat atau diubah dan cara mengujinya.
+
+- Jangan mengubah file di folder docs/ kecuali diminta secara eksplisit di prompt. Bila kode berbeda dari docs/, laporkan perbedaannya, jangan mengubah dokumennya sendiri.

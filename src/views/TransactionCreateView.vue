@@ -5,6 +5,7 @@ import PageHeader from '../components/common/PageHeader.vue'
 import CartList from '../components/features/transactions/CartList.vue'
 import PaymentPanel from '../components/features/transactions/PaymentPanel.vue'
 import ProductPicker from '../components/features/transactions/ProductPicker.vue'
+import { useCartStore } from '../stores/cart.js'
 import { useCategoriesStore } from '../stores/categories.js'
 import { useProductsStore } from '../stores/products.js'
 import { useRestocksStore } from '../stores/restocks.js'
@@ -14,21 +15,14 @@ const productsStore = useProductsStore()
 const categoriesStore = useCategoriesStore()
 const restocksStore = useRestocksStore()
 const transactionsStore = useTransactionsStore()
-const cart = ref([])
-const uangDibayar = ref('')
+const cartStore = useCartStore()
 const notice = ref({ type: '', message: '' })
 const cartWithPurchasePrices = computed(() =>
-  cart.value.map((item) => ({
+  cartStore.itemsWithSubtotals.map((item) => ({
     ...item,
     harga_beli_terakhir:
-      restocksStore.latestPurchasePrices[item.productId] ?? null,
+      restocksStore.latestPurchasePrices[item.product.id] ?? null,
   })),
-)
-const total = computed(() =>
-  cart.value.reduce((sum, item) => {
-    const subtotal = Number(item.jumlah) * Number(item.harga_satuan)
-    return sum + (Number.isFinite(subtotal) ? subtotal : 0)
-  }, 0),
 )
 
 function showNotice(message, type = 'bahaya') {
@@ -36,48 +30,20 @@ function showNotice(message, type = 'bahaya') {
 }
 
 function addProduct(product) {
-  const existing = cart.value.find((item) => item.productId === product.id)
-  if (existing && Number(existing.jumlah) + 1 > product.stok) {
-    showNotice(`Jumlah produk "${product.nama}" melebihi stok tersedia.`)
-    return
+  try {
+    cartStore.addItem(product)
+    notice.value = { type: '', message: '' }
+  } catch (error) {
+    showNotice(error instanceof Error ? error.message : String(error))
   }
-  if (existing) {
-    existing.jumlah = Number(existing.jumlah) + 1
-  } else {
-    cart.value.push({
-      productId: product.id,
-      nama: product.nama,
-      stok: product.stok,
-      harga_normal: product.harga_jual,
-      harga_satuan: product.harga_jual,
-      jumlah: 1,
-    })
-  }
-  notice.value = { type: '', message: '' }
-}
-
-function updateCartItem({ productId, field, value }) {
-  cart.value = cart.value.map((item) =>
-    item.productId === productId ? { ...item, [field]: value } : item,
-  )
-}
-
-function removeCartItem(productId) {
-  cart.value = cart.value.filter((item) => item.productId !== productId)
 }
 
 function saveTransaction() {
   try {
-    const transaction = transactionsStore.addTransaction({
-      items: cart.value.map((item) => ({
-        product_id: item.productId,
-        jumlah: Number(item.jumlah),
-        harga_satuan: Number(item.harga_satuan),
-      })),
-      uang_dibayar: uangDibayar.value,
-    })
-    cart.value = []
-    uangDibayar.value = ''
+    const transaction = transactionsStore.addTransaction(
+      cartStore.validateCheckout(),
+    )
+    cartStore.clear()
     showNotice(`Transaksi #${transaction.id} berhasil disimpan.`, 'sukses')
   } catch (error) {
     showNotice(error instanceof Error ? error.message : String(error))
@@ -105,13 +71,19 @@ function saveTransaction() {
         <h2>Keranjang</h2>
         <CartList
           :items="cartWithPurchasePrices"
-          @update-item="updateCartItem"
-          @remove-item="removeCartItem"
+          @update-quantity="
+            cartStore.updateQuantity($event.productId, $event.value)
+          "
+          @update-price="
+            cartStore.updateUnitPrice($event.productId, $event.value)
+          "
+          @remove-item="cartStore.removeItem"
         />
         <PaymentPanel
-          :total="total"
-          :uang-dibayar="uangDibayar"
-          @update:uang-dibayar="uangDibayar = $event"
+          :total="cartStore.total"
+          :kembalian="cartStore.kembalian"
+          :uang-dibayar="cartStore.uangDibayar"
+          @update:uang-dibayar="cartStore.setAmountPaid"
           @submit="saveTransaction"
         />
       </section>

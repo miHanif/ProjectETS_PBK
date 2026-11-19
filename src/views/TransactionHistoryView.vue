@@ -27,17 +27,13 @@ const dateFilter = ref('')
 const selectedTransaction = ref(null)
 const notice = ref({ type: '', message: '' })
 const visibleTransactions = computed(() => {
-  const today = localDateKey()
-  return transactionsStore.transactions
-    .filter((transaction) => {
-      if (!owner.value) {
-        return transaction.tanggal.slice(0, 10) === today
-      }
-      return (
+  return transactionsStore.viewableTransactions
+    .filter(
+      (transaction) =>
+        !owner.value ||
         !dateFilter.value ||
-        transaction.tanggal.slice(0, 10) === dateFilter.value
-      )
-    })
+        transaction.tanggal.slice(0, 10) === dateFilter.value,
+    )
     .sort((a, b) => b.tanggal.localeCompare(a.tanggal))
     .map((transaction) => ({
       ...transaction,
@@ -52,7 +48,7 @@ const selectedItems = computed(() => {
   if (!selectedTransaction.value) {
     return []
   }
-  return transactionsStore.transactionItems
+  return transactionsStore.viewableTransactionItems
     .filter((item) => item.transaction_id === selectedTransaction.value.id)
     .map((item) => ({
       ...item,
@@ -61,6 +57,11 @@ const selectedItems = computed(() => {
           ?.nama ?? `Produk #${item.product_id}`,
     }))
 })
+
+function selectTransaction(transaction) {
+  selectedTransaction.value =
+    transactionsStore.findViewableTransaction(transaction.id) ?? null
+}
 const canCancel = computed(() => {
   if (!selectedTransaction.value) {
     return false
@@ -113,7 +114,7 @@ function cancelTransaction(reason) {
     </div>
     <TransactionTable
       :rows="visibleTransactions"
-      @select-transaction="selectedTransaction = $event"
+      @select-transaction="selectTransaction"
     />
     <TransactionDetailModal
       :open="Boolean(selectedTransaction)"

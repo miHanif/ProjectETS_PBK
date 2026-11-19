@@ -19,6 +19,27 @@ function localDateTime(date) {
 export const useTransactionsStore = defineStore('transactions', () => {
   const transactions = ref([])
   const transactionItems = ref([])
+  const viewableTransactions = computed(() => {
+    const role = useAuthStore().session?.role
+    if (role === USER_ROLES.OWNER) {
+      return transactions.value
+    }
+    if (role === USER_ROLES.ASSISTANT) {
+      const today = localDateKey()
+      return transactions.value.filter(
+        (transaction) => transaction.tanggal.slice(0, 10) === today,
+      )
+    }
+    return []
+  })
+  const viewableTransactionItems = computed(() => {
+    const transactionIds = new Set(
+      viewableTransactions.value.map((transaction) => transaction.id),
+    )
+    return transactionItems.value.filter((item) =>
+      transactionIds.has(item.transaction_id),
+    )
+  })
   const todaySummary = computed(() => {
     const todayTransactions = transactions.value.filter(
       (transaction) =>
@@ -161,6 +182,10 @@ export const useTransactionsStore = defineStore('transactions', () => {
       STORAGE_KEYS.TRANSACTION_ITEMS,
       transactionItemsSeed,
     )
+  }
+
+  function findViewableTransaction(id) {
+    return viewableTransactions.value.find((transaction) => transaction.id === id)
   }
 
   function addTransaction({ items, uang_dibayar }) {
@@ -329,10 +354,11 @@ export const useTransactionsStore = defineStore('transactions', () => {
   }
 
   return {
-    transactions,
-    transactionItems,
+    viewableTransactions,
+    viewableTransactionItems,
     todaySummary,
     reportForPeriod,
+    findViewableTransaction,
     initialize,
     addTransaction,
     cancelTransaction,

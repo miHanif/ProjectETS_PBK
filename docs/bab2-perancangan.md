@@ -70,7 +70,7 @@ flowchart TD
   PaymentPanel --> BaseInput & BaseButton & AlertMessage
 ```
 
-**Prinsip pembagian (usulan):** views hanya merakit komponen dan membaca atau menulis lewat store Pinia. Komponen features berisi tampilan khusus satu fitur. Komponen common tidak mengenal bisnis (tidak tahu apa itu "produk"). Store Pinia yang dirujuk: authStore, productStore, categoryStore, transactionStore, restockStore, userStore (detail di Bab 3).
+**Prinsip pembagian (usulan):** views hanya merakit komponen dan membaca atau menulis lewat store Pinia. Komponen features berisi tampilan khusus satu fitur. Komponen common tidak mengenal bisnis (tidak tahu apa itu "produk"). Store Pinia yang dirujuk: authStore, productStore, categoryStore, cartStore, transactionStore, restockStore, userStore (detail di Bab 3). CartStore menyimpan keranjang sementara dan memvalidasi checkout sebelum transaksi disimpan melalui transactionStore.
 
 ### Komponen reusable: props dan emits utama
 
@@ -99,8 +99,8 @@ flowchart TD
 | ProductTable | products, canEdit (false untuk Asisten) | edit, deactivate |
 | ProductForm | product (kosong = tambah), categories, errors | submit, cancel |
 | ProductPicker | products, keyword | add-to-cart (produk) |
-| CartList | items (harga per barang dapat diubah saat tawar-menawar) | update-qty, update-price, remove-item |
-| PaymentPanel | total, error | pay (uang dibayar) |
+| CartList | items (harga per barang dapat diubah saat tawar-menawar) | update-quantity, update-price, remove-item |
+| PaymentPanel | total, kembalian, uangDibayar | update:uang-dibayar, submit |
 | RestockForm | products | submit, cancel |
 | ReportFilter | mode (harian/bulanan), value | change |
 | SummaryCards | summary | (tidak ada) |

@@ -23,7 +23,7 @@ src/
 ├── layouts/               (AuthLayout, MainLayout)
 ├── views/                 (satu file per halaman, hanya merakit komponen)
 ├── router/                (index.js, penjaga akses per role)
-├── stores/                (auth, product, category, transaction, restock, user)
+├── stores/                (auth, product, category, cart, transaction, restock, user)
 ├── data/seed/             (file JSON data awal)
 ├── services/              (storage.js: baca dan tulis localStorage)
 ├── constants/             (role, nama kunci localStorage)
@@ -42,6 +42,8 @@ src/
 | services | Akses localStorage | View dan komponen tidak menyentuh localStorage langsung |
 | router | Rute dan penjaga role | Satu tempat aturan akses |
 | constants, utils | Nama role, kunci storage, format rupiah dan tanggal | Mencegah nilai tertulis berulang (hardcode) |
+
+Store `cart` menyimpan keranjang sementara di Pinia dan memvalidasi checkout sebelum `transactionStore` menyimpan transaksi. `transactionStore` menyediakan daftar transaksi dan item yang dapat dilihat sesuai role aktif.
 
 ## 3.2 Mekanisme Data Seed (JSON) dan Persistensi Local Storage
 

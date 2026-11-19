@@ -5,6 +5,7 @@ import { formatRupiah } from '../../../utils/formatters.js'
 
 const props = defineProps({
   total: { type: Number, required: true },
+  kembalian: { type: Number, required: true },
   uangDibayar: { type: String, required: true },
 })
 const emit = defineEmits(['update:uang-dibayar', 'submit'])
@@ -24,9 +25,7 @@ const emit = defineEmits(['update:uang-dibayar', 'submit'])
     />
     <div class="payment-change">
       <span>Kembalian</span>
-      <strong>
-        {{ formatRupiah(Math.max(0, Number(props.uangDibayar) - props.total)) }}
-      </strong>
+      <strong>{{ formatRupiah(props.kembalian) }}</strong>
     </div>
     <BaseButton
       label="Simpan Transaksi"
