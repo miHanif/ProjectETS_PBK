@@ -40,34 +40,71 @@ App.vue
 **Pohon komponen (Mermaid)**
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'fontSize': '15px', 'fontFamily': 'Inter, Arial, sans-serif' }}}%%
 flowchart TD
-  App[App.vue] --> AuthLayout
-  App --> MainLayout
-  AuthLayout --> LoginView --> LoginForm
-  MainLayout --> AppSidebar
-  MainLayout --> AppTopbar
-  MainLayout --> RouterView
-  RouterView --> DashboardView
-  RouterView --> ProductListView
-  RouterView --> CategoryView
-  RouterView --> TransactionCreateView
-  RouterView --> TransactionHistoryView
-  RouterView --> RestockView
-  RouterView --> ReportView
-  RouterView --> UserManagementView
-  DashboardView --> SummaryCards & LowStockList
-  ProductListView --> ProductFilterBar & ProductTable & ProductForm
-  CategoryView --> CategoryTable & CategoryForm
-  TransactionCreateView --> ProductPicker & CartList & PaymentPanel
-  TransactionHistoryView --> TransactionTable & TransactionDetailModal
-  RestockView --> RestockForm & RestockTable
-  ReportView --> ReportFilter & ReportSummary & ReportTable
-  UserManagementView --> UserTable & UserForm
-  SummaryCards --> StatCard
-  ProductTable --> DataTable
-  ProductTable --> StatusBadge
-  ProductForm --> BaseInput & BaseSelect & BaseButton
-  PaymentPanel --> BaseInput & BaseButton & AlertMessage
+
+  %% Root & Layout
+  App["App.vue (Root)"]
+  App --> AuthLayout["AuthLayout.vue"]
+  App --> MainLayout["MainLayout.vue"]
+
+  AuthLayout --> LoginView["LoginView.vue"]
+  LoginView --> LoginForm["LoginForm.vue"]
+
+  MainLayout --> LayoutCommon["AppSidebar.vue & AppTopbar.vue"]
+  MainLayout --> RouterView["<RouterView>"]
+
+  %% 4 Kolom Modul Seimbang
+  subgraph M1 ["1. Transaksi & Kasir"]
+    RouterView --> V_Trx["TransactionCreateView"]
+    RouterView --> V_Hist["TransactionHistoryView"]
+    V_Trx --> F_Trx["ProductPicker<br/>CartList<br/>PaymentPanel"]
+    V_Hist --> F_Hist["TransactionTable<br/>TransactionDetailModal"]
+  end
+
+  subgraph M2 ["2. Produk & Kategori"]
+    RouterView --> V_Prod["ProductListView"]
+    RouterView --> V_Cat["CategoryView"]
+    V_Prod --> F_Prod["ProductFilterBar<br/>ProductTable<br/>ProductForm"]
+    V_Cat --> F_Cat["CategoryTable<br/>CategoryForm"]
+  end
+
+  subgraph M3 ["3. Restock Grosir"]
+    RouterView --> V_Restock["RestockView"]
+    V_Restock --> F_Restock["RestockForm<br/>RestockTable"]
+  end
+
+  subgraph M4 ["4. Pemilik, Laporan & Akun"]
+    RouterView --> V_Dash["DashboardView"]
+    RouterView --> V_Rep["ReportView"]
+    RouterView --> V_User["UserManagementView"]
+    V_Dash --> F_Dash["SummaryCards<br/>LowStockList"]
+    V_Rep --> F_Rep["ReportFilter<br/>ReportSummary<br/>ReportTable"]
+    V_User --> F_User["UserTable<br/>UserForm"]
+  end
+
+  %% Common Components
+  Common["★ Komponen Bersama (Common UI)<br/>BaseButton • BaseInput • BaseSelect • BaseModal • ConfirmDialog • StatusBadge • AlertMessage • PageHeader"]
+
+  M1 -. Dipakai lintas fitur .-> Common
+  M2 -. Dipakai lintas fitur .-> Common
+  M3 -. Dipakai lintas fitur .-> Common
+  M4 -. Dipakai lintas fitur .-> Common
+
+  %% Pewarnaan Sesuai Style Guide Toko Mida
+  style App fill:#1F6F5C,stroke:#14493D,stroke-width:2px,color:#ffffff,font-weight:bold
+  style AuthLayout fill:#E9F2EF,stroke:#1F6F5C,stroke-width:1.5px,color:#1F2933
+  style MainLayout fill:#E9F2EF,stroke:#1F6F5C,stroke-width:1.5px,color:#1F2933
+  style LayoutCommon fill:#F0F4F2,stroke:#9CB5AB,stroke-width:1px,color:#2B3B35
+  style RouterView fill:#E1F0FA,stroke:#1A73E8,stroke-width:2px,color:#1A73E8,font-weight:bold
+  
+  style Common fill:#FEF3D6,stroke:#F5A524,stroke-width:2px,color:#6A4400,font-weight:bold
+
+  classDef viewNode fill:#E8F0FE,stroke:#1A73E8,stroke-width:1.5px,color:#174EA6,font-weight:bold;
+  classDef featNode fill:#FFFFFF,stroke:#BDC1C6,stroke-width:1.2px,color:#3C4043;
+
+  class V_Trx,V_Hist,V_Prod,V_Cat,V_Restock,V_Dash,V_Rep,V_User,LoginView viewNode;
+  class F_Trx,F_Hist,F_Prod,F_Cat,F_Restock,F_Dash,F_Rep,F_User,LoginForm featNode;
 ```
 
 **Prinsip pembagian (usulan):** views hanya merakit komponen dan membaca atau menulis lewat store Pinia. Komponen features berisi tampilan khusus satu fitur. Komponen common tidak mengenal bisnis (tidak tahu apa itu "produk"). Store Pinia yang dirujuk: authStore, productStore, categoryStore, cartStore, transactionStore, restockStore, userStore (detail di Bab 3). CartStore menyimpan keranjang sementara dan memvalidasi checkout sebelum transaksi disimpan melalui transactionStore.
@@ -292,27 +329,33 @@ Basis data terdiri dari tujuh tabel yang ternormalisasi (3NF). Rekap harian tida
 
 ```mermaid
 erDiagram
-  USERS ||--o{ TRANSACTIONS : mencatat
-  USERS ||--o{ RESTOCKS : mencatat
-  USERS ||--o{ TRANSACTIONS : membatalkan
-  CATEGORIES ||--o{ PRODUCTS : mengelompokkan
-  TRANSACTIONS ||--|{ TRANSACTION_ITEMS : memiliki
-  PRODUCTS ||--o{ TRANSACTION_ITEMS : terjual_dalam
-  RESTOCKS ||--|{ RESTOCK_ITEMS : memiliki
-  PRODUCTS ||--o{ RESTOCK_ITEMS : dibeli_dalam
+  %% Relasi Master Kategori & Produk
+  CATEGORIES ||--|{ PRODUCTS : "mengelompokkan"
+
+  %% Alur Penjualan (Kiri)
+  USERS ||--o{ TRANSACTIONS : "mencatat"
+  TRANSACTIONS ||--|{ TRANSACTION_ITEMS : "memuat"
+  PRODUCTS ||--o{ TRANSACTION_ITEMS : "terjual_dalam"
+
+  %% Alur Belanja Grosir (Kanan)
+  USERS ||--o{ RESTOCKS : "mencatat"
+  RESTOCKS ||--|{ RESTOCK_ITEMS : "memuat"
+  PRODUCTS ||--o{ RESTOCK_ITEMS : "dibeli_dalam"
 
   USERS {
     int id PK
     varchar nama
     varchar username UK
     varchar password
-    varchar role "pemilik atau asisten"
+    varchar role "pemilik / asisten"
     boolean aktif
   }
+
   CATEGORIES {
     int id PK
     varchar nama UK
   }
+
   PRODUCTS {
     int id PK
     int category_id FK
@@ -322,6 +365,7 @@ erDiagram
     int stok_minimum
     boolean aktif
   }
+
   TRANSACTIONS {
     int id PK
     int user_id FK
@@ -329,10 +373,11 @@ erDiagram
     int total
     int uang_dibayar
     int kembalian
-    varchar status
+    varchar status "selesai / dibatalkan"
     varchar alasan_batal
     int dibatalkan_oleh FK
   }
+
   TRANSACTION_ITEMS {
     int id PK
     int transaction_id FK
@@ -342,18 +387,20 @@ erDiagram
     int harga_satuan
     int subtotal
   }
+
   RESTOCKS {
     int id PK
     int user_id FK
     date tanggal
     varchar catatan
   }
+
   RESTOCK_ITEMS {
     int id PK
     int restock_id FK
     int product_id FK
     int jumlah
-    int harga_beli "boleh kosong"
+    int harga_beli "opsional"
   }
 ```
 

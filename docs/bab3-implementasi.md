@@ -116,9 +116,3 @@ flowchart TD
 6. Setiap aksi tambah, ubah, atau hapus mengubah state, lalu menulis ulang ke localStorage lewat services/storage.js.
 7. Saat halaman dimuat ulang, langkah 3 dan 4 berjalan lagi sehingga data tetap ada.
 
-### Usulan tambahan (menunggu persetujuan mahasiswa)
-
-| Usulan | Manfaat |
-|---|---|
-| Sesi login disimpan di localStorage | Pengguna tetap login setelah halaman dimuat ulang |
-| Tombol "Atur ulang data" khusus Pemilik | Mengembalikan semua data ke seed, berguna saat pengujian dan demo |
